@@ -113,20 +113,24 @@ public class MainWindow implements Initializable {
 
         ObservableList<Part> partNameSearchResult = Inventory.lookUpPart(queryString);
 
-        if (partNameSearchResult.size() == 0) {
             try {
-                int idSearch = Integer.parseInt(queryString);
-                Part idSearchResult = Inventory.lookUpPart(idSearch);
-                if (idSearchResult != null) {
-                    partNameSearchResult.add(idSearchResult);
+                if (partNameSearchResult.size() != 0) {
+                    partsTableView.setItems(partNameSearchResult);
+                }
+                else {
+                    int idSearch = Integer.parseInt(queryString);
+                    Part idSearchResult = Inventory.lookUpPart(idSearch);
+                    if (idSearchResult != null) {
+                        TableView.TableViewSelectionModel<Part> selectionModel = partsTableView.getSelectionModel();
+                        selectionModel.select(idSearchResult);
+                        //partNameSearchResult.add(idSearchResult);
+                    }
                 }
             }
             catch (NumberFormatException e) {
                 //ignore
             }
         }
-        partsTableView.setItems(partNameSearchResult);
-    }
 
     //Main Window Product Search Bar Functionality
     public void getProductsResultsHandler(ActionEvent actionEvent) {
@@ -134,17 +138,20 @@ public class MainWindow implements Initializable {
 
         ObservableList<Product> productNameSearchResult = Inventory.lookUpProduct(queryString);
         try {
-            if (productNameSearchResult.size() == 0) {
+            if (productNameSearchResult.size() != 0) {
+                productsTableView.setItems(productNameSearchResult);
+            }
+            else {
                 int productID = Integer.parseInt(queryString);
                 Product productIDSearchResult = Inventory.lookUpProduct(productID);
                 if (productIDSearchResult != null) {
-                    productNameSearchResult.add(productIDSearchResult);
+                    TableView.TableViewSelectionModel<Product> selectionModel = productsTableView.getSelectionModel();
+                    selectionModel.select(productIDSearchResult);
                 }
             }
         }
         catch (NumberFormatException e){
             //Do nothing.
         }
-        productsTableView.setItems(productNameSearchResult);
     }
 }
