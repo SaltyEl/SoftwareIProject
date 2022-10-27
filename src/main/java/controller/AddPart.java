@@ -30,7 +30,6 @@ public class AddPart implements Initializable{
     public RadioButton addPartOutSourcedRB;
     public Button addPartSaveBtn;
     public Label inHouseVSOutsourcedLabel;
-    public Label exceptionLabel;
 
     private String name;
     private int id;
@@ -70,6 +69,9 @@ public class AddPart implements Initializable{
             if (min > max) {
                 throw new Exception("Min should be less than Max.");
             }
+            if ((inventory > max) || (inventory < min)) {
+                throw new Exception("Inventory must be between Min and Max");
+            }
 
             if (addPartInHouseRB.isSelected()) {
                 int machineID = Integer.parseInt(addPartVariableTxt.getText());
@@ -85,7 +87,7 @@ public class AddPart implements Initializable{
         }
         catch(NumberFormatException nfe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
+            alert.setTitle("Error");
             alert.setContentText("Please enter a valid value for each text field.");
             alert.showAndWait();
         }

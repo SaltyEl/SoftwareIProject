@@ -18,6 +18,7 @@ import model.Product;
 import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -40,7 +41,6 @@ public class MainWindow implements Initializable {
     public Button productDeleteButton;
     public TextField productsSearchBar;
     public  TextField partsSearchBar;
-    public Label productHasPartsLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,8 +63,13 @@ public class MainWindow implements Initializable {
 
 
     public void onPartsDeleteButtonClicked(ActionEvent actionEvent) {
-        Part partToBeDeleted = partsTableView.getSelectionModel().getSelectedItem();
-        Inventory.deletePart(partToBeDeleted);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete part?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Part partToBeDeleted = partsTableView.getSelectionModel().getSelectedItem();
+            Inventory.deletePart(partToBeDeleted);
+        }
     }
 
     private void windowLoader (ActionEvent actionEvent, String fxmlDoc, Button buttonClicked, double width, double height) throws IOException {
@@ -78,18 +83,30 @@ public class MainWindow implements Initializable {
         windowLoader(actionEvent, "/view/AddPart.fxml", partAddButton, 475, 425);
     }
 
+    //Caught Runtime Exception for nullptr
     public void onPartsModifyButtonClick(ActionEvent actionEvent) throws IOException {
-        ModifyPart.modifiedPart = partsTableView.getSelectionModel().getSelectedItem();
-        windowLoader(actionEvent, "/view/ModifyPart.fxml", modifyPartButton, 475, 425);
+        try {
+            ModifyPart.modifiedPart = partsTableView.getSelectionModel().getSelectedItem();
+            windowLoader(actionEvent, "/view/ModifyPart.fxml", modifyPartButton, 475, 425);
+        }
+        catch (Exception npe) {
+            //Do nothing.
+        }
     }
 
+    //Caught runtime exception for nullptr
     public void onProductAddClick(ActionEvent actionEvent) throws IOException {
         windowLoader(actionEvent, "/view/AddProduct.fxml", productAddButton, 850, 500);
     }
 
     public void onProductModifyButtonClick(ActionEvent actionEvent) throws IOException {
-        ModifyProduct.modifiedProduct = productsTableView.getSelectionModel().getSelectedItem();
-        windowLoader(actionEvent, "/view/ModifyProduct.fxml", productModifyButton, 850, 500);
+        try {
+            ModifyProduct.modifiedProduct = productsTableView.getSelectionModel().getSelectedItem();
+            windowLoader(actionEvent, "/view/ModifyProduct.fxml", productModifyButton, 850, 500);
+        }
+        catch(Exception npe){
+            //Do nothing.
+        }
     }
 
     public void onProductDeleteClick(ActionEvent actionEvent) {
@@ -98,7 +115,10 @@ public class MainWindow implements Initializable {
             Inventory.deleteProduct(productToDelete);
         }
         else {
-            productHasPartsLabel.setText("This Product Has Parts");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Product");
+            alert.setContentText("This Product Has Parts");
+            alert.showAndWait();
         }
     }
 

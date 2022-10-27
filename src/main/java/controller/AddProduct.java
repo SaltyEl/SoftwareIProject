@@ -6,10 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
@@ -19,6 +16,7 @@ import model.Product;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class AddProduct implements Initializable {
 
@@ -121,17 +119,27 @@ public class AddProduct implements Initializable {
         String searchText = addProductSearchTxt.getText();
 
         ObservableList<Part> returnedParts = Inventory.lookUpPart(searchText);
+        Part idPartResult = null;
         try {
             if (returnedParts.size() != 0) {
                 partsTableView1.setItems(returnedParts);
             }
             else {
-                int textNumSearch = Integer.parseInt(searchText);
-                Part idPartResult = Inventory.lookUpPart(textNumSearch);
-                if (idPartResult != null) {
-                    TableView.TableViewSelectionModel<Part> selectionModel = partsTableView1.getSelectionModel();
-                    selectionModel.select(idPartResult);
+                Scanner scnr = new Scanner(searchText);
+                if (scnr.hasNextInt()){
+                    int textNumSearch = Integer.parseInt(searchText);
+                    idPartResult = Inventory.lookUpPart(textNumSearch);
+                    if (idPartResult != null) {
+                        TableView.TableViewSelectionModel<Part> selectionModel = partsTableView1.getSelectionModel();
+                        selectionModel.select(idPartResult);
+                    }
                 }
+            }
+            if (idPartResult == null && returnedParts.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Parts");
+                    alert.setContentText("No matching part found");
+                    alert.showAndWait();
             }
         }
         catch (NumberFormatException e){
@@ -140,7 +148,18 @@ public class AddProduct implements Initializable {
     }
 
     public void onRemoveAssociatedPartClick(ActionEvent actionEvent) {
-        Part partToRemove = associatedPartsTableView.getSelectionModel().getSelectedItem();
-        partsList.remove(partToRemove);
+        try {
+            Part partToRemove = associatedPartsTableView.getSelectionModel().getSelectedItem();
+            if (partToRemove != null) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setContentText("Are you sure you want to remove part?");
+                alert.showAndWait();
+            }
+            partsList.remove(partToRemove);
+        }
+        catch (Exception e) {
+            //Do nothing.
+        }
     }
 }

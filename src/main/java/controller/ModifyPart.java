@@ -14,6 +14,7 @@ import model.Part;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class ModifyPart implements Initializable {
 
@@ -38,13 +39,16 @@ public class ModifyPart implements Initializable {
         if (modifiedPart instanceof InHouse) {
             modifyPartInHouseRB.setSelected(true);
             modifyPartVariableTxt.setText(Integer.toString(((InHouse) modifiedPart).getMachineId()));
+            modPartVariableLabel.setText("Machine ID");
         }
         else {
             modifyPartOutsourcedRB.setSelected(true);
             Outsourced outsourcedPart = (Outsourced)modifiedPart;
             modifyPartVariableTxt.setText(outsourcedPart.getCompanyName());
+            modPartVariableLabel.setText("Company Name");
 
         }
+        modifyPartIdTxt.setText(Integer.toString(modifiedPart.getId()));
         modifyPartNameTxt.setText(modifiedPart.getName());
         modifyPartInventoryTxt.setText(Integer.toString(modifiedPart.getStock()));
         modifyPartCostTxt.setText(Double.toString(modifiedPart.getPrice()));
@@ -68,26 +72,33 @@ public class ModifyPart implements Initializable {
     public void onSaveButtonClick(ActionEvent actionEvent) throws IOException {
         Part partToMod;
         int indexOfPart;
+        try {
 
-        indexOfPart = Inventory.getAllParts().indexOf(modifiedPart);
-        int id = modifiedPart.getId();
-        String name = modifyPartNameTxt.getText();
-        int stock = Integer.parseInt(modifyPartInventoryTxt.getText());
-        double price = Double.parseDouble(modifyPartCostTxt.getText());
-        int max = Integer.parseInt(modifyPartMaxTxt.getText());
-        int min = Integer.parseInt(modifyPartMinTxt.getText());
-        if (modifyPartInHouseRB.isSelected()) {
-            int machineID = Integer.parseInt(modifyPartVariableTxt.getText());
-            partToMod = new InHouse(id, name, price, stock, min, max, machineID);
-            Inventory.updatePart(indexOfPart, partToMod);
+            indexOfPart = Inventory.getAllParts().indexOf(modifiedPart);
+            int id = modifiedPart.getId();
+            String name = modifyPartNameTxt.getText();
+            int stock = Integer.parseInt(modifyPartInventoryTxt.getText());
+            double price = Double.parseDouble(modifyPartCostTxt.getText());
+            int max = Integer.parseInt(modifyPartMaxTxt.getText());
+            int min = Integer.parseInt(modifyPartMinTxt.getText());
+            if (modifyPartInHouseRB.isSelected()) {
+                int machineID = Integer.parseInt(modifyPartVariableTxt.getText());
+                partToMod = new InHouse(id, name, price, stock, min, max, machineID);
+                Inventory.updatePart(indexOfPart, partToMod);
+            }
+            else if (modifyPartOutsourcedRB.isSelected()) {
+                String companyName = modifyPartVariableTxt.getText();
+                partToMod = new Outsourced(id, name, price, stock, min, max, companyName);
+                Inventory.updatePart(indexOfPart, partToMod);
+            }
+            windowLoader(actionEvent, "/view/main-window.fxml", modifyPartSaveBtn, 1000, 400);
         }
-        else {
-            String companyName = modifyPartVariableTxt.getText();
-            partToMod = new Outsourced(id, name, price, stock, min, max, companyName);
-            Inventory.updatePart(indexOfPart, partToMod);
+        catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Please enter a valid value for each text field");
+            alert.showAndWait();
         }
-        windowLoader(actionEvent, "/view/main-window.fxml", modifyPartSaveBtn, 1000, 400);
-        System.out.println("Saved");
 
     }
 

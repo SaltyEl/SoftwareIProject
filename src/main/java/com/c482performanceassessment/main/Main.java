@@ -34,6 +34,7 @@ public class Main extends Application {
 
         Product defaultProduct1 = new Product(1, "Street Bike", 399.99, 3, 0, 10);
         Product defaultProduct2 = new Product(2, "Mountain Bike", 499.99, 5, 0, 10);
+        defaultProduct2.addAssociatedPart(defaultOutsourcedPart);
 
         Inventory.addProduct(defaultProduct1);
         Inventory.addProduct(defaultProduct2);
