@@ -15,13 +15,15 @@ import model.Product;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class ModifyProduct implements Initializable {
 
     public static Product modifiedProduct;
-    private ObservableList<Part> partsList;
+
+    private ObservableList<Part> partsList = FXCollections.observableArrayList();
     public TableColumn<Part, Double> partCostCol1;
     public TableColumn<Part, Integer> partInventoryCol1;
     public TableColumn<Part, String> partNameCol1;
@@ -48,6 +50,7 @@ public class ModifyProduct implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         //Fill in Product Details
+        modProductIDTxt.setText(Integer.toString(modifiedProduct.getId()));
         modNameTxt.setText(modifiedProduct.getName());
         modProductInvTxt.setText(Integer.toString(modifiedProduct.getStock()));
         modProductPriceTxt.setText(Double.toString(modifiedProduct.getPrice()));
@@ -80,45 +83,73 @@ public class ModifyProduct implements Initializable {
 
     public void onAddButtonClick(ActionEvent actionEvent) {
         Part partToAdd = partsTableView2.getSelectionModel().getSelectedItem();
-        partsList.add(partToAdd);
+        if (partToAdd != null) {
+            partsList.add(partToAdd);
+        }
     }
 
     public void onRemoveButtonClick(ActionEvent actionEvent) {
         try {
             Part partToRemove = associatedPartsTableView.getSelectionModel().getSelectedItem();
             if (partToRemove != null) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
-                alert.setContentText("Are you sure you want to remove part?");
-                alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to remove part?");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.isPresent() && ButtonType.OK == result.get()) {
+                    partsList.remove(partToRemove);
+                }
             }
-            partsList.remove(partToRemove);
         }
-        catch (Exception e) {
-            //Do nothing.
+        catch(Exception e){
+                //Do nothing.
+            }
         }
-    }
 
     public void onSaveClick(ActionEvent actionEvent) throws IOException {
         Product productToMod;
         int indexOfProduct;
+        try {
 
-        indexOfProduct = Inventory.getAllProducts().indexOf(modifiedProduct);
-        String productName = modNameTxt.getText();
-        int productInv = Integer.parseInt(modProductInvTxt.getText());
-        double price = Double.parseDouble(modProductPriceTxt.getText());
-        int min = Integer.parseInt(modProductMinTxt.getText());
-        int max = Integer.parseInt(modProductMaxTxt.getText());
-
-        Product newProduct = new Product(modifiedProduct.getId(), productName, price, productInv, min, max);
-        if (partsList.size() != 0){
-            for (Part part : partsList) {
-                newProduct.addAssociatedPart(part);
+            indexOfProduct = Inventory.getAllProducts().indexOf(modifiedProduct);
+            String productName = modNameTxt.getText();
+            if (productName.isEmpty()) {
+                throw new Exception("Product must have a name.");
             }
-        }
+            int productInv = Integer.parseInt(modProductInvTxt.getText());
+            double price = Double.parseDouble(modProductPriceTxt.getText());
+            int min = Integer.parseInt(modProductMinTxt.getText());
+            int max = Integer.parseInt(modProductMaxTxt.getText());
 
-        Inventory.updateProduct(indexOfProduct, newProduct);
-        windowLoader(actionEvent, "/view/main-window.fxml", modProductSaveBtn, 950, 400);
+            if (min >= max) {
+                throw new Exception("Min must be less than max");
+            }
+            if (productInv < min || productInv > max) {
+                throw new Exception("Inventory must be between min and max");
+            }
+
+            productToMod = new Product(modifiedProduct.getId(), productName, price, productInv, min, max);
+            if (partsList.size() > 0) {
+                for (Part part : partsList) {
+                    productToMod.addAssociatedPart(part);
+                }
+            }
+
+
+            Inventory.updateProduct(indexOfProduct, productToMod);
+            windowLoader(actionEvent, "/view/main-window.fxml", modProductSaveBtn, 950, 400);
+        }
+        catch(NumberFormatException nfe) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Please enter a valid value for each text field.");
+            alert.showAndWait();
+        }
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     public void onCancelClick(ActionEvent actionEvent) throws IOException {

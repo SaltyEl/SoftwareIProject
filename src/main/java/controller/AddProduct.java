@@ -15,6 +15,7 @@ import model.Product;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -80,7 +81,9 @@ public class AddProduct implements Initializable {
     table view to show parts added.*/
     public void onPartAddClick(ActionEvent actionEvent) throws IOException {
         Part partToAdd = partsTableView1.getSelectionModel().getSelectedItem();
-        partsList.add(partToAdd);
+        if (partToAdd != null) {
+            partsList.add(partToAdd);
+        }
     }
 
     public void onCancelBtnClick(ActionEvent actionEvent) throws IOException {
@@ -89,30 +92,53 @@ public class AddProduct implements Initializable {
 
     //Functionality for adding new product
     public void onProductAddSaveClick(ActionEvent actionEvent) throws IOException {
-        int id;
-        if (!Inventory.getAllProducts().isEmpty()) {
-            Product product = Inventory.getAllProducts().get(Inventory.getAllProducts().size() - 1);
-            int tempId = product.getId();
-            id = tempId + 1;
-        }
-        else {
-            id = 1;
-        }
-        String name = addProductNameTxt.getText();
-        double price = Double.parseDouble(addProductPriceTxt.getText());
-        int stock = Integer.parseInt(addProductInvTxt.getText());
-        int min = Integer.parseInt(addProductMinTxt.getText());
-        int max = Integer.parseInt(addProductMaxTxt.getText());
-
-        Product newProduct = new Product(id, name, price, stock, min, max);
-        if (!(partsList.isEmpty())){
-            for (Part part : partsList) {
-                newProduct.addAssociatedPart(part);
+        try {
+            int id;
+            if (!Inventory.getAllProducts().isEmpty()) {
+                Product product = Inventory.getAllProducts().get(Inventory.getAllProducts().size() - 1);
+                int tempId = product.getId();
+                id = tempId + 1;
+            } else {
+                id = 1;
             }
-        }
-        Inventory.addProduct(newProduct);
+            String name = addProductNameTxt.getText();
+            if (name.isEmpty()) {
+                throw new Exception("Product must have a name.");
+            }
+            double price = Double.parseDouble(addProductPriceTxt.getText());
+            int stock = Integer.parseInt(addProductInvTxt.getText());
+            int min = Integer.parseInt(addProductMinTxt.getText());
+            int max = Integer.parseInt(addProductMaxTxt.getText());
 
-        windowLoader(actionEvent, "/view/main-window.fxml", addProductSaveButton, 950, 400);
+            if (min >= max) {
+                throw new Exception("Min must be less than max");
+            }
+            if (stock < min || stock > max) {
+                throw new Exception("Inventory must be between min and max");
+            }
+
+            Product newProduct = new Product(id, name, price, stock, min, max);
+            if (!(partsList.isEmpty())) {
+                for (Part part : partsList) {
+                    newProduct.addAssociatedPart(part);
+                }
+            }
+            Inventory.addProduct(newProduct);
+
+            windowLoader(actionEvent, "/view/main-window.fxml", addProductSaveButton, 950, 400);
+        }
+        catch(NumberFormatException nfe) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Please enter a valid value for each text field.");
+            alert.showAndWait();
+        }
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     public void getPartsResultHandler1(ActionEvent actionEvent) {
@@ -151,12 +177,13 @@ public class AddProduct implements Initializable {
         try {
             Part partToRemove = associatedPartsTableView.getSelectionModel().getSelectedItem();
             if (partToRemove != null) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
-                alert.setContentText("Are you sure you want to remove part?");
-                alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to remove part?");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    partsList.remove(partToRemove);
+                }
             }
-            partsList.remove(partToRemove);
         }
         catch (Exception e) {
             //Do nothing.

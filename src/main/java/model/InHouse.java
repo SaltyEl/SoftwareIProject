@@ -1,5 +1,12 @@
 package model;
 
+/**
+ *InHouse class extends Part class, and adds machineID field
+ *
+ * @author Blake Ramsey
+ * @version 1.0
+ */
+
 public class InHouse extends Part{
 
     private int machineId;

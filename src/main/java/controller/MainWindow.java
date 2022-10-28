@@ -111,14 +111,18 @@ public class MainWindow implements Initializable {
 
     public void onProductDeleteClick(ActionEvent actionEvent) {
         Product productToDelete = productsTableView.getSelectionModel().getSelectedItem();
-        if (productToDelete.getAllAssociatedParts().size() == 0) {
-            Inventory.deleteProduct(productToDelete);
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Product");
-            alert.setContentText("This Product Has Parts");
-            alert.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this product?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (productToDelete.getAllAssociatedParts().size() < 1) {
+                Inventory.deleteProduct(productToDelete);
+            } else {
+                Alert alert2 = new Alert(Alert.AlertType.ERROR);
+                alert2.setTitle("Product");
+                alert2.setContentText("This Product Has Parts");
+                alert2.showAndWait();
+            }
         }
     }
 
@@ -170,7 +174,7 @@ public class MainWindow implements Initializable {
                 }
             }
         }
-        catch (NumberFormatException e){
+        catch (Exception e){
             //Do nothing.
         }
     }

@@ -77,10 +77,20 @@ public class ModifyPart implements Initializable {
             indexOfPart = Inventory.getAllParts().indexOf(modifiedPart);
             int id = modifiedPart.getId();
             String name = modifyPartNameTxt.getText();
+            if (name.isEmpty()) {
+                throw new Exception("Part must have name");
+            }
             int stock = Integer.parseInt(modifyPartInventoryTxt.getText());
             double price = Double.parseDouble(modifyPartCostTxt.getText());
             int max = Integer.parseInt(modifyPartMaxTxt.getText());
             int min = Integer.parseInt(modifyPartMinTxt.getText());
+
+            if (min >= max) {
+                throw new Exception("Min must be less than max");
+            }
+            if (stock < min || stock > max) {
+                throw new Exception("Inventory must be between min and max");
+            }
             if (modifyPartInHouseRB.isSelected()) {
                 int machineID = Integer.parseInt(modifyPartVariableTxt.getText());
                 partToMod = new InHouse(id, name, price, stock, min, max, machineID);
@@ -93,10 +103,16 @@ public class ModifyPart implements Initializable {
             }
             windowLoader(actionEvent, "/view/main-window.fxml", modifyPartSaveBtn, 1000, 400);
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException nfe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setContentText("Please enter a valid value for each text field");
+            alert.showAndWait();
+        }
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
 
