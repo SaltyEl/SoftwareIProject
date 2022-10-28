@@ -35,7 +35,7 @@ public class Inventory{
     public static Product lookUpProduct (int productId){
         ObservableList<Product> allProductsList = getAllProducts();
 
-        for (int i = 0; i < allParts.size(); i++) {
+        for (int i = 0; i < allProducts.size(); i++) {
             Product productResult = allProductsList.get(i);
             if (productResult.getId() == productId){
                 return productResult;
