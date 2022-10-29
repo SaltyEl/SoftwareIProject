@@ -10,6 +10,18 @@ import model.Product;
 
 import java.io.IOException;
 
+/**
+ * Main Class - initiates program.
+ * <br>
+ * <br>
+ * FUTURE ENHANCEMENTS - This application could be enhanced further in many ways.
+ * <br>
+ * 1. Store data that is added in long-term storage instead of just locally.<br>
+ * 2. Create windowLoader method that could be used statically throughout the application.<br>
+ * 3. Create a login window in order to protect sensitive inventory information.
+ *
+ * @author Blake Ramsey
+ */
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
@@ -20,7 +32,11 @@ public class Main extends Application {
         stage.show();
     }
 
-
+    /**
+     * This method launches the application, and adds pre-made parts and products.
+     *
+     * @param args an array of command-line arguments for the application
+     */
     public static void main(String[] args) {
 
         //Initial TableView Part and Product Objects.

@@ -28,7 +28,7 @@ public class ModifyProduct implements Initializable {
 
     public static Product modifiedProduct;
 
-    private ObservableList<Part> partsList = FXCollections.observableArrayList();
+    private static ObservableList<Part> partsList;
     public TableColumn<Part, Double> partCostCol1;
     public TableColumn<Part, Integer> partInventoryCol1;
     public TableColumn<Part, String> partNameCol1;
@@ -78,7 +78,8 @@ public class ModifyProduct implements Initializable {
         partCostCol1.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         //Associated Parts Table
-        partsList = modifiedProduct.getAllAssociatedParts();
+        partsList = FXCollections.observableArrayList();
+        partsList.addAll(modifiedProduct.getAllAssociatedParts());
         associatedPartsTableView.setItems(partsList);
         associatedPartsIDCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         associatedPartsNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));

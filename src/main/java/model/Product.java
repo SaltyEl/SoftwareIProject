@@ -26,63 +26,125 @@ public class Product {
         this.max = max;
     }
 
+    /**
+     *
+     * @return Returns ID.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets product ID
+     * @param id The ID to set.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return Returns product name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set product name.
+     * @param name The name to set.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return Returns the product price.
+     */
     public double getPrice() {
         return price;
     }
 
+    /**
+     * Sets the product price.
+     * @param price The price to set.
+     */
     public void setPrice(double price) {
         this.price = price;
     }
 
+    /**
+     *
+     * @return Returns the product stock.
+     */
     public int getStock() {
         return stock;
     }
 
+    /**
+     * Sets the product stock.
+     * @param stock The stock to set.
+     */
     public void setStock(int stock) {
         this.stock = stock;
     }
 
+    /**
+     *
+     * @return Returns the minimum product stock.
+     */
     public int getMin() {
         return min;
     }
 
+    /**
+     * Sets the minimum product stock.
+     * @param min the min to set.
+     */
     public void setMin(int min) {
         this.min = min;
     }
 
+    /**
+     *
+     * @return Returns the max product stock.
+     */
     public int getMax() {
         return max;
     }
 
+    /**
+     * Sets the max product stock.
+     * @param max the max to set.
+     */
     public void setMax(int max) {
         this.max = max;
     }
 
+    /**
+     * Adds associated part to associatedParts list.
+     * @param part part to add.
+     */
     public void addAssociatedPart(Part part) {
             associatedParts.add(part);
     }
 
+    /**
+     * Deletes selected part.
+     *
+     * @param selectedAssociatedPart Part to delete.
+     * @return Returns true when deleted.
+     */
     public boolean deleteAssociatedPart(Part selectedAssociatedPart) {
         associatedParts.remove(selectedAssociatedPart);
         return true;
     }
 
+    /**
+     *
+     * @return returns all associated product parts.
+     */
     public ObservableList<Part> getAllAssociatedParts(){
         return this.associatedParts;
     }

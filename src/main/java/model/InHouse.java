@@ -4,7 +4,6 @@ package model;
  *InHouse class extends Part class, and adds machineID field
  *
  * @author Blake Ramsey
- * @version 1.0
  */
 
 public class InHouse extends Part{
@@ -17,10 +16,18 @@ public class InHouse extends Part{
         this.machineId = machineId;
     }
 
+    /**
+     *
+     * @return the machineId
+     */
     public int getMachineId() {
         return machineId;
     }
 
+    /**
+     *
+     * @param machineId the machineId to set
+     */
     public void setMachineId(int machineId) {
         this.machineId = machineId;
     }

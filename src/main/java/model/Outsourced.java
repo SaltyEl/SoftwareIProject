@@ -1,5 +1,10 @@
 package model;
 
+/**
+ *Outsourced class extends Part class, and adds companyName field
+ *
+ * @author Blake Ramsey
+ */
 public class Outsourced extends Part{
 
     private String companyName;
@@ -10,10 +15,18 @@ public class Outsourced extends Part{
         this.companyName = companyName;
     }
 
+    /**
+     *
+     * @return Returns company name.
+     */
     public String getCompanyName() {
         return companyName;
     }
 
+    /**
+     * Set company name.
+     * @param companyName The company name to set.
+     */
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
