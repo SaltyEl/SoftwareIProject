@@ -2,11 +2,9 @@ package model;
 
 import java.lang.String;
 
-/**
- * Supplied class Part.java
- */
 
 /**
+ * This class allows for Parts to be created and manipulated throughout the program.
  *
  * @author Blake Ramsey
  */

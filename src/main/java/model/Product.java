@@ -7,6 +7,11 @@ import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
 
+/**
+ * This class allows for Products to be created and manipulated throughout the program.
+ *
+ * @author Blake Ramsey
+ */
 public class Product {
     private ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     private int id;

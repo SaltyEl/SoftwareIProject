@@ -11,7 +11,7 @@ import model.Product;
 import java.io.IOException;
 
 /**
- * Main Class - initiates program.
+ * This class creates an app for Parts and Products, which can be manipulated in various ways.
  * <br>
  * <br>
  * FUTURE ENHANCEMENTS - This application could be enhanced further in many ways.
