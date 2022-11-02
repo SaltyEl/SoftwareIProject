@@ -20,7 +20,8 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 /**
- * The controller for interaction between Product.java and AddProduct.fxml
+ * The controller for interaction between Product.java and AddProduct.fxml<br><br>
+ * JavaDoc Document is included with submission.
  *
  * @author Blake Ramsey
  */
